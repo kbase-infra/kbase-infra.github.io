@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Availability Table</title>
+    <title>Member Schedule and Availability</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        .time-display {
+            margin-bottom: 20px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         th, td {
             border: 1px solid #dddddd;
@@ -27,9 +31,14 @@
         .not-around {
             background-color: #f8d7da;
         }
+        .not-applicable {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
+    <div class="time-display" id="currentTime">Current Time: Loading...</div>
+
     <h2>Member Availability</h2>
     <table id="availabilityTable">
         <tr>
@@ -43,18 +52,73 @@
         <tr id="Joe"><td>Joe</td><td>Checking...</td></tr>
     </table>
 
+    <h2>Weekly Schedule</h2>
+    <table>
+        <tr>
+            <th>Member</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+        <tr>
+            <td>Boris</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+        </tr>
+        <tr>
+            <td>Keith</td>
+            <td class="not-applicable">N/A</td>
+            <td>11am-7pm</td>
+            <td>11am-7pm</td>
+            <td>11am-7pm</td>
+            <td>11am-7pm</td>
+        </tr>
+        <tr>
+            <td>Jason</td>
+            <td>3pm-11pm</td>
+            <td>3pm-11pm</td>
+            <td>3pm-11pm</td>
+            <td>3pm-11pm</td>
+            <td>3pm-11pm</td>
+        </tr>
+        <tr>
+            <td>Dan</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td class="not-applicable">N/A</td>
+        </tr>
+        <tr>
+            <td>Joe</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+            <td>9am-5pm</td>
+        </tr>
+    </table>
+
     <script>
         function updateMemberStatus() {
             const now = new Date();
             const cstTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
             const dayOfWeek = cstTime.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
             const hours = cstTime.getHours(); // 0 to 23
+            const minutes = cstTime.getMinutes();
+            const currentTimeDisplay = document.getElementById('currentTime');
+            currentTimeDisplay.textContent = 'Current Time: ' + cstTime.toLocaleString();
 
             // Define the schedules
             const schedules = {
                 "Boris": { start: 9, end: 17, daysOff: [] },
-                "Keith": { start: 11, end: 17, daysOff: [1] }, // 1 is Monday
-                "Jason": { start: 15, end: 17, daysOff: [] },
+                "Keith": { start: 11, end: 19, daysOff: [1] }, // Keith ends at 7pm, 1 is Monday
+                "Jason": { start: 15, end: 23, daysOff: [] }, // Jason ends at 11pm
                 "Dan": { start: 9, end: 17, daysOff: [5] }, // 5 is Friday
                 "Joe": { start: 9, end: 17, daysOff: [] }
             };
