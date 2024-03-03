@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Availability Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .around {
+            background-color: #d4edda;
+        }
+        .not-around {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h2>Member Availability</h2>
+    <table id="availabilityTable">
+        <tr>
+            <th>Member</th>
+            <th>Status</th>
+        </tr>
+        <tr id="Boris"><td>Boris</td><td>Checking...</td></tr>
+        <tr id="Keith"><td>Keith</td><td>Checking...</td></tr>
+        <tr id="Jason"><td>Jason</td><td>Checking...</td></tr>
+        <tr id="Dan"><td>Dan</td><td>Checking...</td></tr>
+        <tr id="Joe"><td>Joe</td><td>Checking...</td></tr>
+    </table>
+
+    <script>
+        function updateMemberStatus() {
+            const now = new Date();
+            const cstTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
+            const dayOfWeek = cstTime.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+            const hours = cstTime.getHours(); // 0 to 23
+
+            // Define the schedules
+            const schedules = {
+                "Boris": { start: 9, end: 17, daysOff: [] },
+                "Keith": { start: 11, end: 17, daysOff: [1] }, // 1 is Monday
+                "Jason": { start: 15, end: 17, daysOff: [] },
+                "Dan": { start: 9, end: 17, daysOff: [5] }, // 5 is Friday
+                "Joe": { start: 9, end: 17, daysOff: [] }
+            };
+
+            Object.keys(schedules).forEach(member => {
+                const { start, end, daysOff } = schedules[member];
+                const isAround = hours >= start && hours < end && !daysOff.includes(dayOfWeek);
+                const memberRow = document.getElementById(member);
+                memberRow.cells[1].textContent = isAround ? "Around" : "Not Around";
+                memberRow.className = isAround ? "around" : "not-around";
+            });
+        }
+
+        // Update status upon loading and then every minute to keep it up-to-date
+        updateMemberStatus();
+        setInterval(updateMemberStatus, 60000); // Update every minute
+    </script>
+</body>
+</html>
